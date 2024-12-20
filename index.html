@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glassmorphism Clock</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #121212;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 0, 81, 0.8), rgba(255, 0, 81, 0.4));
+            animation: move 15s infinite ease-in-out;
+        }
+
+        .circle.blue {
+            background: linear-gradient(135deg, rgba(0, 162, 255, 0.8), rgba(0, 162, 255, 0.4));
+        }
+
+        @keyframes move {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            25% {
+                transform: translate(40vw, -40vh);
+            }
+
+            50% {
+                transform: translate(-30vw, 30vh);
+            }
+
+            75% {
+                transform: translate(30vw, 50vh);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .clock {
+            width: 600px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            border: none;
+            outline: none;
+        }
+
+        .clock::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border-radius: 45px;
+            z-index: -1;
+            background: linear-gradient(45deg,
+                    #ff0000,
+                    #ff7300,
+                    #ffeb00,
+                    #47ff00,
+                    #00ffee,
+                    #2b65ff,
+                    #6a00ff,
+                    #ff007d);
+            background-size: 300% 300%;
+            animation: gradient-border 6s infinite;
+            border: 15px solid transparent;
+            background-clip: padding-box;
+            mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
+            mask-composite: exclude;
+            -webkit-mask-composite: destination-out;
+        }
+
+        @keyframes gradient-border {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        .day {
+            font-size: 2rem;
+            font-weight: 300;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .time {
+            font-size: 4rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background" id="background"></div>
+
+    <div class="clock">
+        <div class="day" id="day">Saturday</div>
+        <div class="time" id="time">00:00:00 PM</div>
+    </div>
+
+    <script>
+        // Update clock every second
+        function updateClock() {
+            const now = new Date();
+            const dayNames = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+
+            const formattedHours = ((hours + 11) % 12 + 1).toString().padStart(2, '0');
+            const formattedMinutes = minutes.toString().padStart(2, '0');
+            const formattedSeconds = seconds.toString().padStart(2, '0');
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+
+            document.getElementById('day').textContent = dayNames[now.getDay()];
+            document.getElementById('time').textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds} ${ampm}`;
+        }
+
+        setInterval(updateClock, 1000);
+        updateClock(); // Initial call
+
+        // Create animated circles
+        function createCircles() {
+            const background = document.getElementById('background');
+            for (let i = 0; i < 20; i++) {
+                const circle = document.createElement('div');
+                const size = Math.random() * 200 + 50; // Random size between 50px and 250px
+                const posX = Math.random() * window.innerWidth;
+                const posY = Math.random() * window.innerHeight;
+
+                circle.className = `circle ${Math.random() > 0.5 ? 'blue' : ''}`;
+                circle.style.width = `${size}px`;
+                circle.style.height = `${size}px`;
+                circle.style.left = `${posX}px`;
+                circle.style.top = `${posY}px`;
+                circle.style.animationDuration = `${Math.random() * 8 + 20}s`; // Random duration between 12s and 20s
+
+                background.appendChild(circle);
+            }
+        }
+
+        createCircles();
+    </script>
+</body>
+
+</html>
